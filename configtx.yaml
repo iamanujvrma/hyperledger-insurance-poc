@@ -1,0 +1,72 @@
+---
+Profiles:
+  FourOrgsGenesis:
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+      - *OrdererOrg
+    Consortiums:
+      InsuranceConsortium:
+        Organizations:
+        - *HdfcErgoOrg
+        - *TataAigOrg
+        - *BajajOrg
+        - *IffcoOrg
+  FourOrgsChannel:
+    Consortium: InsuranceConsortium
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+      - *HdfcErgoOrg
+      - *TataAigOrg
+      - *BajajOrg
+      - *IffcoOrg
+
+Organizations:
+- &OrdererOrg
+  Name: OrdererOrg
+  ID: OrdererMSP
+  MSPDir: cli/peers/ordererOrganizations/orderer-org/msp
+- &HdfcErgoOrg
+  Name: HdfcErgoOrgMSP
+  ID: HdfcErgoOrgMSP
+  MSPDir: cli/peers/peerOrganizations/hdfcergo-org/msp
+  AnchorPeers:
+  - Host: hdfcergo-peer
+    Port: 7051
+- &TataAigOrg
+  Name: TataAigOrgMSP
+  ID: TataAigOrgMSP
+  MSPDir: cli/peers/peerOrganizations/tataaig-org/msp
+  AnchorPeers:
+  - Host: tataaig-peer
+    Port: 7051
+- &BajajOrg
+  Name: BajajOrgMSP
+  ID: BajajOrgMSP
+  MSPDir: cli/peers/peerOrganizations/bajaj-org/msp
+  AnchorPeers:
+  - Host: bajaj-peer
+    Port: 7051
+- &IffcoOrg
+  Name: IffcoOrgMSP
+  ID: IffcoOrgMSP
+  MSPDir: cli/peers/peerOrganizations/iffco-org/msp
+  AnchorPeers:
+  - Host: iffco-peer
+    Port: 7051
+
+Orderer: &OrdererDefaults
+  OrdererType: solo
+  Addresses:
+  - orderer0:7050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 10
+    AbsoluteMaxBytes: 99 MB
+    PreferredMaxBytes: 512 KB
+  Organizations:
+
+Application: &ApplicationDefaults
+  Organizations:
+

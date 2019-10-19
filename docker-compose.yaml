@@ -1,0 +1,131 @@
+version: '2'
+
+services:
+  hdfcergo-ca:
+    container_name: hdfcergo-ca
+    extends:
+      file: ./ca-base.yaml
+      service: ca-base
+    image: hdfcergo-ca
+    ports:
+    - 7054:7054
+
+  tataaig-ca:
+    container_name: tataaig-ca
+    extends:
+      file: ./ca-base.yaml
+      service: ca-base
+    image: tataaig-ca
+    ports:
+    - 8054:7054
+
+  bajaj-ca:
+    container_name: bajaj-ca
+    extends:
+      file: ./ca-base.yaml
+      service: ca-base
+    image: bajaj-ca
+    ports:
+    - 9054:7054
+
+  iffco-ca:
+    container_name: iffco-ca
+    extends:
+      file: ./ca-base.yaml
+      service: ca-base
+    image: iffco-ca
+    ports:
+    - 10054:7054
+
+  orderer0:
+    container_name: orderer0
+    image: orderer
+    environment:
+    - ORDERER_GENERAL_LOGLEVEL=debug
+    - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+    - ORDERER_GENERAL_GENESISMETHOD=file
+    - ORDERER_GENERAL_GENESISFILE=/orderer/crypto/genesis.block
+    - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+    - ORDERER_GENERAL_LOCALMSPDIR=/orderer/crypto/msp
+    - ORDERER_GENERAL_TLS_ENABLED=true
+    - ORDERER_GENERAL_TLS_PRIVATEKEY=/orderer/crypto/tls/server.key
+    - ORDERER_GENERAL_TLS_CERTIFICATE=/orderer/crypto/tls/server.crt
+    - ORDERER_GENERAL_TLS_ROOTCAS=[/orderer/crypto/tls/ca.crt]
+    working_dir: /orderer
+    command: orderer
+    ports:
+    - 7050:7050
+
+  hdfcergo-peer:
+    container_name: hdfcergo-peer
+    extends:
+      file: ./peer-base.yaml
+      service: peer-base
+    image: hdfcergo-peer
+    environment:
+    - CORE_PEER_ID=hdfcergo-peer
+    - CORE_PEER_ADDRESS=hdfcergo-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=hdfcergo-peer:7051
+    - CORE_PEER_LOCALMSPID=HdfcErgoOrgMSP
+    ports:
+    - 7051:7051
+    - 7053:7053
+    depends_on:
+    - orderer0
+
+  tataaig-peer:
+    container_name: tataaig-peer
+    extends:
+      file: ./peer-base.yaml
+      service: peer-base
+    image: tataaig-peer
+    environment:
+    - CORE_PEER_ID=tataaig-peer
+    - CORE_PEER_ADDRESS=tataaig-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=tataaig-peer:7051
+    - CORE_PEER_LOCALMSPID=TataAigOrgMSP
+    ports:
+    - 8051:7051
+    - 8053:7053
+    depends_on:
+    - orderer0
+    - hdfcergo-peer
+
+  bajaj-peer:
+    container_name: bajaj-peer
+    extends:
+      file: ./peer-base.yaml
+      service: peer-base
+    image: bajaj-peer
+    environment:
+    - CORE_PEER_ID=bajaj-peer
+    - CORE_PEER_ADDRESS=bajaj-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=bajaj-peer:7051
+    - CORE_PEER_LOCALMSPID=BajajOrgMSP
+    ports:
+    - 9051:7051
+    - 9053:7053
+    depends_on:
+    - orderer0
+    - hdfcergo-peer
+    - tataaig-peer
+
+  iffco-peer:
+    container_name: iffco-peer
+    extends:
+      file: ./peer-base.yaml
+      service: peer-base
+    image: iffco-peer
+    environment:
+    - CORE_PEER_ID=iffco-peer
+    - CORE_PEER_ADDRESS=iffco-peer:7051
+    - CORE_PEER_GOSSIP_EXTERNALENDPOINT=iffco-peer:7051
+    - CORE_PEER_LOCALMSPID=IffcoOrgMSP
+    ports:
+    - 10051:7051
+    - 10053:7053
+    depends_on:
+    - orderer0
+    - hdfcergo-peer
+    - tataaig-peer
+    - bajaj-peer

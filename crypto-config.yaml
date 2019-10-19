@@ -1,0 +1,28 @@
+OrdererOrgs:
+- Name: OrdererOrg
+  Domain: orderer-org
+  CommonName: orderer-org
+  Specs:
+  - Hostname: orderer0
+    CommonName: "{{.Hostname}}"
+PeerOrgs:
+- Name: HdfcErgoOrg
+  Domain: hdfcergo-org
+  Specs:
+  - Hostname: hdfcergo-peer
+    CommonName: "{{.Hostname}}"
+- Name: TataAigOrg
+  Domain: tataaig-org
+  Specs:
+  - Hostname: tataaig-peer
+    CommonName: "{{.Hostname}}"
+- Name: BajajOrg
+  Domain: bajaj-org
+  Specs:
+  - Hostname: bajaj-peer
+    CommonName: "{{.Hostname}}"
+- Name: IffcoOrg
+  Domain: iffco-org
+  Specs:
+  - Hostname: iffco-peer
+    CommonName: "{{.Hostname}}"
